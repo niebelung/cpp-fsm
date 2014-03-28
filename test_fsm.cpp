@@ -48,7 +48,7 @@ class test_fsm : public fsm::state_machine<test_fsm, st, 5, st::s_1>
         row< st::s_5, ev_5_1, st::s_1, &f::on_ev_5, &f::g_ev_5 >,
 // --------+--------+-------+--------+------------+-------------|
         row< st::s_2, ev1,    st::s_4, &f::on_ev1,  &f::g_ev1 >,
-        row< st::s_3, ev1,    st::s_5, &f::on_ev1,  &f::g_ev1 >,
+        row< st::s_3, ev1,    st::s_5, &f::on_ev1,  nullptr   >,
         row< st::s_5, ev1,    st::s_1, &f::on_ev1,  &f::g_false >
     > transition_table_t;
 
@@ -130,6 +130,19 @@ int main(int argc, char** argv)
     s = fsm.process_event(e1);
     out_state(s);
     s = fsm.process_event(ev45);
+    out_state(s);
+    s = fsm.process_event(e1);
+    out_state(s);
+
+    fsm.reset();
+    printf("TEST 3\n\r");
+    printf("initial state: ");
+    out_state(fsm.state());
+
+    // 1 -> 2 -> 3
+    s = fsm.process_event(ev12);
+    out_state(s);
+    s = fsm.process_event(ev23);
     out_state(s);
     s = fsm.process_event(e1);
     out_state(s);

@@ -49,12 +49,21 @@ protected:
             state_t st = fsm.state();
             for(auto &c: m_s_calls) {
                 if(st == c.start) {
-                    if((fsm.*(c.guard))(e)) {
-                        (fsm.*(c.action))(e);
-                        return c.next;
+                    bool transition = true;
+
+                    if(nullptr != c.guard) {
+                        transition = (fsm.*(c.guard))(e);
                     }
 
-                    return st;
+                    if(transition) {
+                        if(nullptr != c.action) {
+                            (fsm.*(c.action))(e);
+                        }
+
+                        return c.next;
+                    } else {
+                        return st;
+                    }
                 }
             }
 
