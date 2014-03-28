@@ -90,9 +90,12 @@ void out_state(st s)
 
 int main(int argc, char** argv)
 {
+    (void)(argc);
+    (void)(argv);
+    
     test_fsm fsm;
 
-    printf("sizeof(test_fsm): %u\n\r", sizeof(test_fsm));
+    printf("sizeof(test_fsm): %lu\n\r", sizeof(test_fsm));
 
     struct ev_1 ev1;
     struct ev_2 ev2;
