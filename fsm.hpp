@@ -59,11 +59,9 @@ protected:
                         if(nullptr != c.action) {
                             (fsm.*(c.action))(e);
                         }
-
                         return c.next;
-                    } else {
-                        return st;
                     }
+                    return st;
                 }
             }
 
