@@ -101,7 +101,7 @@ int main(int argc, char** argv)
     struct ev_5 ev5;
     struct ev_6 ev6;
 
-    st s = st::s_1;
+    st s;
 
     printf("TEST 1\n\r");
     printf("initial state: ");

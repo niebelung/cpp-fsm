@@ -48,6 +48,8 @@ protected:
                     c.guard = g;
                     c.start = start;
                     c.next = next;
+
+                    return;
                 }
             }
         }
@@ -119,6 +121,11 @@ public:
     void reset()    { m_state = m_s_init_state; }
 
 private:
+    state_machine(const state_machine& other)                          = delete;
+    state_machine& operator= (const state_machine& other)              = delete;
+    state_machine(const state_machine&& other)                         = delete;
+    state_machine& operator= (const state_machine&& other)             = delete;    
+
     state_t m_state;
     derived* m_fsm_ptr;
     constexpr static state_t m_s_init_state { init };
