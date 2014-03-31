@@ -36,34 +36,31 @@ class test_fsm : public fsm::state_machine<test_fsm, st, 5, st::s_1>
     template<typename ev>
     bool g_false(const ev& e) { (void)(e); printf("false guard -> "); return false; }
 
+    template<typename ev>
+    bool g_true(const ev& e) { (void)(e); printf("true guard -> "); return true; }
+
     typedef test_fsm f;
 
-    typedef transition_table<
+    typedef struct transition_table<
 //         | Start  | Event |  Next  |  Callback  |     Guard   |
 // --------|--------|-------|--------|------------|-------------|
-        row< st::s_1, ev_1, st::s_2, &f::on_ev_1, &f::g_ev_1 >,
-        row< st::s_2, ev_2, st::s_3, &f::on_ev_2, &f::g_ev_2 >,
-        row< st::s_3, ev_3, st::s_4, &f::on_ev_3, &f::g_ev_3 >,
-        row< st::s_4, ev_4, st::s_5, &f::on_ev_4, &f::g_ev_4 >,
-        row< st::s_5, ev_5, st::s_1, &f::on_ev_5, &f::g_ev_5 >,
+        row< st::s_1, ev_1, st::s_2, &f::on_ev_1, &f::g_ev_1  >,
+        row< st::s_2, ev_2, st::s_3, &f::on_ev_2, &f::g_ev_2  >,
+        row< st::s_3, ev_3, st::s_4, &f::on_ev_3, &f::g_ev_3  >,
+        row< st::s_4, ev_4, st::s_5, &f::on_ev_4, &f::g_ev_4  >,
+        row< st::s_5, ev_5, st::s_1, &f::on_ev_5, &f::g_ev_5  >,
 // --------+--------+-------+--------+------------+-------------|
-        row< st::s_2, ev_6, st::s_4, &f::on_ev_6, &f::g_ev_6 >,
-        row< st::s_3, ev_6, st::s_5, &f::on_ev_6, nullptr   >,
+        row< st::s_2, ev_6, st::s_4, &f::on_ev_6, &f::g_ev_6  >,
+        row< st::s_3, ev_6, st::s_5, &f::on_ev_6              >,
         row< st::s_5, ev_6, st::s_1, &f::on_ev_6, &f::g_false >
     > transition_table_t;
 
 public:
-
     template<typename event_t>
     st process_event(const event_t& e)
     {
-        m_state = tt.transition<event_t>(*this, e);
-
-        return m_state;
+        return transition<transition_table_t, event_t>(e);
     }
-
-private:
-    transition_table_t tt;
 };
 
 void out_state(st s)

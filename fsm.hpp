@@ -11,7 +11,11 @@ template<typename derived,
 class state_machine
 {
 public:
-    state_machine() : m_state(init) {}
+    state_machine() : 
+        m_state(init)
+    {
+        m_fsm_ptr = static_cast<derived*>(this);
+    }
 
 protected:
     template<typename event_t>
@@ -27,8 +31,17 @@ protected:
             state_t  next;
         };
 
+    public:
+        transition_layer()
+        {
+            for(auto &c: m_s_calls) {
+                c.action = nullptr;
+                c.guard = nullptr;
+            }
+        }
+
     protected:
-        bool set_calls(action_t a, guard_t g, state_t start, state_t next)
+        void set_calls(action_t a, guard_t g, state_t start, state_t next)
         {
             for(auto &c : m_s_calls) {
                 if((nullptr == c.action) && (nullptr == c.guard)) {
@@ -36,12 +49,8 @@ protected:
                     c.guard = g;
                     c.start = start;
                     c.next = next;
-
-                    return true;
                 }
             }
-
-            return false;
         }
 
         state_t call(derived& fsm, const event_t& e)
@@ -68,15 +77,6 @@ protected:
             return st;
         }
 
-    public:
-        transition_layer()
-        {
-            for(auto &c: m_s_calls) {
-                c.action = nullptr;
-                c.guard = nullptr;
-            }
-        }
-
     private:
         struct calls m_s_calls[state_count];
     };
@@ -84,8 +84,8 @@ protected:
     template<state_t start,
              typename event_t,
              state_t next,
-             void (derived::*action)(const event_t&),
-             bool (derived::*guard)(const event_t&)>
+             void (derived::*action)(const event_t&) = nullptr,
+             bool (derived::*guard)(const event_t&) = nullptr>
     class row : public virtual transition_layer<event_t>
     {
     public:
@@ -108,11 +108,22 @@ protected:
     };
 
 public:
+    template<typename transition_table_t, typename event_t>
+    state_t transition(const event_t& e)
+    {
+        static transition_table_t tt;
+
+        m_state = tt.transition<event_t>(*m_fsm_ptr, e);
+
+        return m_state;
+    }
+
     state_t state() { return m_state; }
     void reset()    { m_state = m_s_init_state; }
 
 protected:
     state_t m_state;
+    derived* m_fsm_ptr;
     constexpr static state_t m_s_init_state { init };
 };
 
