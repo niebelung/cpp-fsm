@@ -17,7 +17,7 @@ enum class st
     s_5
 };
 
-class test_fsm : public fsm::state_machine<test_fsm, st, 5, st::s_1>
+class test_fsm : public fsm::state_machine<test_fsm, st, st::s_1>
 {
     void on_ev_1(const ev_1& e) { (void)(e); printf("event 1 -> "); }
     void on_ev_2(const ev_2& e) { (void)(e); printf("event 2 -> "); }
@@ -26,12 +26,12 @@ class test_fsm : public fsm::state_machine<test_fsm, st, 5, st::s_1>
     void on_ev_5(const ev_5& e) { (void)(e); printf("event 5 -> "); }
     void on_ev_6(const ev_6& e) { (void)(e); printf("event 6 -> "); }
 
-    bool g_ev_1(const ev_1& e) { (void)(e); printf("event 1 guard -> "); return true; }
-    bool g_ev_2(const ev_2& e) { (void)(e); printf("event 2 guard -> "); return true; }
-    bool g_ev_3(const ev_3& e) { (void)(e); printf("event 3 guard -> "); return true; }
-    bool g_ev_4(const ev_4& e) { (void)(e); printf("event 4 guard -> "); return true; }
-    bool g_ev_5(const ev_5& e) { (void)(e); printf("event 5 guard -> "); return true; }
-    bool g_ev_6(const ev_6& e) { (void)(e); printf("event 6 guard -> "); return true; }
+    bool g_ev_1(const ev_1& e) { (void)(e); printf("guard 1 -> "); return true; }
+    bool g_ev_2(const ev_2& e) { (void)(e); printf("guard 2 -> "); return true; }
+    bool g_ev_3(const ev_3& e) { (void)(e); printf("guard 3 -> "); return true; }
+    bool g_ev_4(const ev_4& e) { (void)(e); printf("guard 4 -> "); return true; }
+    bool g_ev_5(const ev_5& e) { (void)(e); printf("guard 5 -> "); return true; }
+    bool g_ev_6(const ev_6& e) { (void)(e); printf("guard 6 -> "); return true; }
 
     template<typename ev>
     bool g_false(const ev& e) { (void)(e); printf("false guard -> "); return false; }
@@ -65,7 +65,6 @@ public:
 
 void out_state(st s)
 {
-	printf("state: ");
 	switch(s) {
 		case st::s_1:
 			printf("s_1\n\r");
