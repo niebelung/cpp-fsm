@@ -10,11 +10,7 @@ template<typename derived,
 class state_machine
 {
 protected:
-    state_machine() : 
-        m_state(init)
-    {
-        m_fsm_ptr = static_cast<derived*>(this);
-    }
+    state_machine() : m_state(init), m_fsm_ptr(static_cast<derived*>(this)) {}
 
     template<typename event_t>
     class transition_layer
@@ -38,9 +34,7 @@ protected:
         transition_info_t* m_list;
 
     protected:
-        transition_layer() : m_list(nullptr)
-        {
-        }
+        transition_layer() : m_list(nullptr) {}
 
         void add(transition_info_t* const ti)
         {
@@ -127,7 +121,11 @@ public:
         return m_state;
     }
 
-    state_t state() { return m_state; }
+    state_t state()                                                        const 
+    {
+        return m_state; 
+    }
+
     void reset()    { m_state = m_s_init_state; }
 
 private:
