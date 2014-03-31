@@ -89,8 +89,7 @@ protected:
     class row : public virtual transition_layer<event_t>
     {
     public:
-        row() : transition_layer<event_t>(), 
-                ti( {action, guard, start, next, nullptr} )
+        row() : ti( {action, guard, start, next, nullptr} )
         {
             this->transition_layer<event_t>::add(&ti);
         }
