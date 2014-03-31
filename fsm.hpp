@@ -10,14 +10,13 @@ template<typename derived,
          state_t  init>
 class state_machine
 {
-public:
+protected:
     state_machine() : 
         m_state(init)
     {
         m_fsm_ptr = static_cast<derived*>(this);
     }
 
-protected:
     template<typename event_t>
     class transition_layer
     {
@@ -81,9 +80,7 @@ protected:
         struct calls m_s_calls[state_count];
     };
 
-    template<state_t start,
-             typename event_t,
-             state_t next,
+    template<state_t start, typename event_t, state_t next,
              void (derived::*action)(const event_t&) = nullptr,
              bool (derived::*guard)(const event_t&) = nullptr>
     class row : public virtual transition_layer<event_t>
@@ -121,7 +118,7 @@ public:
     state_t state() { return m_state; }
     void reset()    { m_state = m_s_init_state; }
 
-protected:
+private:
     state_t m_state;
     derived* m_fsm_ptr;
     constexpr static state_t m_s_init_state { init };
