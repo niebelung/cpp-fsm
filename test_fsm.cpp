@@ -41,7 +41,7 @@ class test_fsm : public fsm::state_machine<test_fsm, st, st::s_1>
 
     typedef test_fsm f;
 
-    typedef struct transition_table<
+    typedef transition_table<
 //         | Start  | Event |  Next  |  Callback  |     Guard   |
 // --------|--------|-------|--------|------------|-------------|
         row< st::s_1, ev_1, st::s_2, &f::on_ev_1, &f::g_ev_1  >,

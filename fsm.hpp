@@ -115,7 +115,7 @@ public:
     {
         static transition_table_t tt;
 
-        m_state = tt.transition<event_t>(*m_fsm_ptr, e);
+        m_state = tt.template transition<event_t>(*m_fsm_ptr, e);
 
         return m_state;
     }
