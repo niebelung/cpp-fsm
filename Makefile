@@ -17,7 +17,5 @@ clang:
 arm:
 	arm-none-eabi-g++ $(CXXFLAGS) $(ARM_LD_FLAGS) $(SRC) -o $(ARM_TGT)
 
-all: gcc
-
 clean:
 	$(RM) $(GCC_TGT) $(CLANG_TGT) $(ARM_TGT)
