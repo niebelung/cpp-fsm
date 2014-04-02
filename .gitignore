@@ -13,4 +13,7 @@
 *.a
 
 # test
-test
+test_gcc
+test_clang
+test_arm
+

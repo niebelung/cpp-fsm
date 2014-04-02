@@ -183,8 +183,8 @@ public:
     {
         static transition_table_t tt;
 
-        state_t transition_result = tt.template transition<event_t>(*m_fsm_ptr, 
-                                                                    e);
+        const state_t transition_result = tt.template transition<event_t>
+                                                                (*m_fsm_ptr, e);
         if(transition_result != m_state) {
             callback_table_t::call(*m_fsm_ptr, m_state, transition_result);
         }

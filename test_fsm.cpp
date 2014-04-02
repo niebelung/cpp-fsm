@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 #include "fsm.hpp"
 
 struct ev_1 {};
@@ -19,36 +19,36 @@ enum class st
 
 class test_fsm : public fsm::state_machine<test_fsm, st, st::s_1>
 {
-    void on_ev_1(const ev_1& e) { (void)(e); printf("event 1 -> "); }
-    void on_ev_2(const ev_2& e) { (void)(e); printf("event 2 -> "); }
-    void on_ev_3(const ev_3& e) { (void)(e); printf("event 3 -> "); }
-    void on_ev_4(const ev_4& e) { (void)(e); printf("event 4 -> "); }
-    void on_ev_5(const ev_5& e) { (void)(e); printf("event 5 -> "); }
-    void on_ev_6(const ev_6& e) { (void)(e); printf("event 6 -> "); }
+    void on_ev_1(const ev_1& e) { (void)(e); std::cout << "event 1 -> "; }
+    void on_ev_2(const ev_2& e) { (void)(e); std::cout << "event 2 -> "; }
+    void on_ev_3(const ev_3& e) { (void)(e); std::cout << "event 3 -> "; }
+    void on_ev_4(const ev_4& e) { (void)(e); std::cout << "event 4 -> "; }
+    void on_ev_5(const ev_5& e) { (void)(e); std::cout << "event 5 -> "; }
+    void on_ev_6(const ev_6& e) { (void)(e); std::cout << "event 6 -> "; }
 
-    bool g_ev_1(const ev_1& e) { (void)(e); printf("guard 1 -> "); return true; }
-    bool g_ev_2(const ev_2& e) { (void)(e); printf("guard 2 -> "); return true; }
-    bool g_ev_3(const ev_3& e) { (void)(e); printf("guard 3 -> "); return true; }
-    bool g_ev_4(const ev_4& e) { (void)(e); printf("guard 4 -> "); return true; }
-    bool g_ev_5(const ev_5& e) { (void)(e); printf("guard 5 -> "); return true; }
-    bool g_ev_6(const ev_6& e) { (void)(e); printf("guard 6 -> "); return true; }
-
-    template<typename ev>
-    bool g_false(const ev& e) { (void)(e); printf("false guard -> "); return false; }
+    bool g_ev_1(const ev_1& e) { (void)(e); std::cout << "guard 1 -> "; return true; }
+    bool g_ev_2(const ev_2& e) { (void)(e); std::cout << "guard 2 -> "; return true; }
+    bool g_ev_3(const ev_3& e) { (void)(e); std::cout << "guard 3 -> "; return true; }
+    bool g_ev_4(const ev_4& e) { (void)(e); std::cout << "guard 4 -> "; return true; }
+    bool g_ev_5(const ev_5& e) { (void)(e); std::cout << "guard 5 -> "; return true; }
+    bool g_ev_6(const ev_6& e) { (void)(e); std::cout << "guard 6 -> "; return true; }
 
     template<typename ev>
-    bool g_true(const ev& e) { (void)(e); printf("true guard -> "); return true; }
+    bool g_false(const ev& e) { (void)(e); std::cout << "false guard -> "; return false; }
 
-    void on_s_1_enter() { printf ("s_1 enter -> "); }
-    void on_s_1_exit()  { printf ("s_1 exit -> ");  }
-    void on_s_2_enter() { printf ("s_2 enter -> "); }
-    void on_s_2_exit()  { printf ("s_2 exit -> ");  }
-    void on_s_3_enter() { printf ("s_3 enter -> "); }
-    void on_s_3_exit()  { printf ("s_3 exit -> ");  }
-    void on_s_4_enter() { printf ("s_4 enter -> "); }
-    void on_s_4_exit()  { printf ("s_4 exit -> ");  }
-    void on_s_5_enter() { printf ("s_5 enter -> "); }
-    void on_s_5_exit()  { printf ("s_5 exit -> ");  }
+    template<typename ev>
+    bool g_true(const ev& e) { (void)(e); std::cout << "true guard -> "; return true; }
+
+    void on_s_1_enter() { std::cout << "s_1 enter -> "; }
+    void on_s_1_exit()  { std::cout << "s_1 exit -> ";  }
+    void on_s_2_enter() { std::cout << "s_2 enter -> "; }
+    void on_s_2_exit()  { std::cout << "s_2 exit -> ";  }
+    void on_s_3_enter() { std::cout << "s_3 enter -> "; }
+    void on_s_3_exit()  { std::cout << "s_3 exit -> ";  }
+    void on_s_4_enter() { std::cout << "s_4 enter -> "; }
+    void on_s_4_exit()  { std::cout << "s_4 exit -> ";  }
+    void on_s_5_enter() { std::cout << "s_5 enter -> "; }
+    void on_s_5_exit()  { std::cout << "s_5 exit -> ";  }
 
     typedef test_fsm f;
 
@@ -85,19 +85,19 @@ void out_state(st s)
 {
 	switch(s) {
 		case st::s_1:
-			printf("s_1\n\r");
+			std::cout << "s_1" << std::endl;
 		break;
 		case st::s_2:
-			printf("s_2\n\r");
+			std::cout << "s_2" << std::endl;
 		break;
 		case st::s_3:
-			printf("s_3\n\r");
+			std::cout << "s_3" << std::endl;
 		break;
 		case st::s_4:
-			printf("s_4\n\r");
+			std::cout << "s_4" << std::endl;
 		break;
 		case st::s_5:
-			printf("s_5\n\r");
+			std::cout << "s_5" << std::endl;
 		break;
 	}
 }
@@ -109,7 +109,7 @@ int main(int argc, char** argv)
     
     test_fsm fsm;
 
-    printf("sizeof(test_fsm): %lu\n\r", sizeof(test_fsm));
+    std::cout << "sizeof(test_fsm): " << sizeof(test_fsm) << std::endl;
 
     struct ev_1 ev1;
     struct ev_2 ev2;
@@ -120,8 +120,8 @@ int main(int argc, char** argv)
 
     st s;
 
-    printf("TEST 1\n\r");
-    printf("initial state: ");
+    std::cout << "TEST 1" << std::endl;
+    std::cout << "initial state: ";
     out_state(fsm.state());
 
     // 1 -> 2 -> 3 -> 4 -> 5 -> 1
@@ -136,8 +136,8 @@ int main(int argc, char** argv)
     s = fsm.process_event(ev5);
     out_state(s);
 
-    printf("\n\rTEST 2\n\r");
-    printf("initial state: ");
+    std::cout << std::endl << "TEST 2" << std::endl;
+    std::cout << "initial state: ";
     out_state(fsm.state());
 
     // 1 -> 2 -> 4 -> 5 -> 5
@@ -151,8 +151,8 @@ int main(int argc, char** argv)
     out_state(s);
 
     fsm.reset();
-    printf("\n\rTEST 3\n\r");
-    printf("initial state: ");
+    std::cout << std::endl << "TEST 3" << std::endl;
+    std::cout << "initial state: ";
     out_state(fsm.state());
 
     // 1 -> 2 -> 3
