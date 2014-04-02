@@ -39,6 +39,17 @@ class test_fsm : public fsm::state_machine<test_fsm, st, st::s_1>
     template<typename ev>
     bool g_true(const ev& e) { (void)(e); printf("true guard -> "); return true; }
 
+    void on_s_1_enter() { printf ("s_1 enter -> "); }
+    void on_s_1_exit()  { printf ("s_1 exit -> ");  }
+    void on_s_2_enter() { printf ("s_2 enter -> "); }
+    void on_s_2_exit()  { printf ("s_2 exit -> ");  }
+    void on_s_3_enter() { printf ("s_3 enter -> "); }
+    void on_s_3_exit()  { printf ("s_3 exit -> ");  }
+    void on_s_4_enter() { printf ("s_4 enter -> "); }
+    void on_s_4_exit()  { printf ("s_4 exit -> ");  }
+    void on_s_5_enter() { printf ("s_5 enter -> "); }
+    void on_s_5_exit()  { printf ("s_5 exit -> ");  }
+
     typedef test_fsm f;
 
     typedef transition_table<
@@ -55,11 +66,18 @@ class test_fsm : public fsm::state_machine<test_fsm, st, st::s_1>
         row< st::s_5, ev_6, st::s_1, &f::on_ev_6, &f::g_false >
     > transition_table_t;
 
+    typedef callback_table<
+        scb< st::s_1, &f::on_s_1_enter, &f::on_s_1_exit >,
+        scb< st::s_2, &f::on_s_2_enter                  >,
+        scb< st::s_3, nullptr         , &f::on_s_3_exit >,
+        scb< st::s_5, &f::on_s_5_enter, &f::on_s_5_exit >
+    > callback_table_t;
+
 public:
     template<typename event_t>
     st process_event(const event_t& e)
     {
-        return transition<transition_table_t, event_t>(e);
+        return transition<event_t, transition_table_t, callback_table_t>(e);
     }
 };
 

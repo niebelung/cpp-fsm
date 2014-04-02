@@ -109,13 +109,87 @@ protected:
         }
     };
 
+    typedef void (derived::*on_enter_t)(void);
+    typedef void (derived::*on_exit_t)(void);
+
+    template<state_t state,
+             on_enter_t on_enter = nullptr,
+             on_exit_t on_exit = nullptr>
+    class scb 
+    {
+    public:
+        constexpr static state_t    cb_state =    state;
+        constexpr static on_enter_t cb_on_enter = on_enter;
+        constexpr static on_exit_t  cb_on_exit =  on_exit;
+    };
+
+    template<typename... callbacks>
+    class callback_table : public callbacks...
+    {
+    public:
+        static void call(derived& fsm, const state_t prev, const state_t next)
+        {
+            on_exit_chain<0, callbacks...>(fsm, prev);
+            on_enter_chain<0, callbacks...>(fsm, next);
+        }
+
+    private:
+        template<size_t CNT, typename callback, typename... tail>
+        static void on_exit_chain(derived& fsm, const state_t s)
+        {
+            if(callback::cb_state == s) {
+                if(nullptr != callback::cb_on_exit) {
+                    (fsm.*(callback::cb_on_exit))();
+                }
+                return;
+            }
+
+            on_exit_chain<CNT + 1, tail...>(fsm, s);
+        }
+
+        template<size_t CNT>
+        static void on_exit_chain(derived& fsm, const state_t s)
+        {
+            (void)(fsm);
+            (void)(s);
+        }
+
+        template<size_t CNT, typename callback, typename... tail>
+        static void on_enter_chain(derived& fsm, const state_t s)
+        {
+            if(callback::cb_state == s) {
+                if(nullptr != callback::cb_on_enter) {
+                    (fsm.*(callback::cb_on_enter))();
+                }
+                return;
+            }
+
+            on_enter_chain<CNT + 1, tail...>(fsm, s);
+        }
+
+        template<size_t CNT>
+        static void on_enter_chain(derived& fsm, const state_t s)
+        {
+            (void)(fsm);
+            (void)(s);
+        }
+    };
+
 public:
-    template<typename transition_table_t, typename event_t>
+    template<typename event_t, 
+             typename transition_table_t,
+             typename callback_table_t>
     state_t transition(const event_t& e)
     {
         static transition_table_t tt;
 
-        m_state = tt.template transition<event_t>(*m_fsm_ptr, e);
+        state_t transition_result = tt.template transition<event_t>(*m_fsm_ptr, 
+                                                                    e);
+        if(transition_result != m_state) {
+            callback_table_t::call(*m_fsm_ptr, m_state, transition_result);
+        }
+
+        m_state = transition_result;
 
         return m_state;
     }
@@ -125,7 +199,10 @@ public:
         return m_state; 
     }
 
-    void reset()    { m_state = m_s_init_state; }
+    void reset()    
+    {
+        m_state = m_s_init_state; 
+    }
 
 private:
     state_machine(const state_machine& other)                          = delete;
