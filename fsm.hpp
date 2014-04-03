@@ -117,10 +117,10 @@ protected:
              on_exit_t on_exit = nullptr>
     class scb 
     {
-    public:
-        constexpr static state_t    cb_state =    state;
-        constexpr static on_enter_t cb_on_enter = on_enter;
-        constexpr static on_exit_t  cb_on_exit =  on_exit;
+    protected:
+        static state_t    cb_state()    { return state;    }
+        static on_enter_t cb_on_enter() { return on_enter; }
+        static on_exit_t  cb_on_exit()  { return on_exit;  }
     };
 
     template<typename... callbacks>
@@ -137,9 +137,9 @@ protected:
         template<size_t CNT, typename callback, typename... tail>
         static void on_exit_chain(derived& fsm, const state_t s)
         {
-            if(callback::cb_state == s) {
-                if(nullptr != callback::cb_on_exit) {
-                    (fsm.*(callback::cb_on_exit))();
+            if(callback::cb_state() == s) {
+                if(nullptr != callback::cb_on_exit()) {
+                    (fsm.*(callback::cb_on_exit()))();
                 }
                 return;
             }
@@ -157,9 +157,9 @@ protected:
         template<size_t CNT, typename callback, typename... tail>
         static void on_enter_chain(derived& fsm, const state_t s)
         {
-            if(callback::cb_state == s) {
-                if(nullptr != callback::cb_on_enter) {
-                    (fsm.*(callback::cb_on_enter))();
+            if(callback::cb_state() == s) {
+                if(nullptr != callback::cb_on_enter()) {
+                    (fsm.*(callback::cb_on_enter()))();
                 }
                 return;
             }
