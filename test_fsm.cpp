@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+
 #include "fsm.hpp"
 
 struct ev_1 {};
@@ -81,6 +83,113 @@ public:
     }
 };
 
+struct play {};
+struct open_close {};
+struct cd_detected { 
+    cd_detected(char const* const name, std::vector<float> const& tracks_duration) :
+    m_name(name), m_tracks(tracks_duration)
+    {}
+
+    const char* const     m_name;
+    std::vector<float> m_tracks;
+};
+struct pause {};
+struct stop {};
+
+enum class player_state {
+    empty,
+    open,
+    stopped,
+    playing,
+    paused
+};
+
+class player : public fsm::state_machine<player, player_state, player_state::empty>
+{
+    void start_playback(play const& e)
+    {
+        (void)(e);
+        std::cout << "start playback" << std::endl; 
+    }
+
+    void open_drawer(open_close const& e)
+    { 
+        (void)(e); 
+        std::cout << "open drawer" << std::endl; 
+    }
+
+    void close_drawer(open_close const& e)
+    { 
+        (void)(e); 
+        std::cout << "close drawer" << std::endl; 
+    }
+
+    void store_cd_info(cd_detected const& e)
+    { 
+        std::cout << "store cd info:" << std::endl << e.m_name << std::endl;
+        for(auto& i: e.m_tracks) {
+            std::cout << "Track: " << i << std::endl;
+        }
+    }
+
+    void stop_playback(stop const& e)
+    { 
+        (void)(e); 
+        std::cout << "stop playback" << std::endl; 
+    }
+
+    void pause_playback(pause const& e)
+    { 
+        (void)(e); 
+        std::cout << "pause playback" << std::endl; 
+    }
+
+    void resume_playback(play const& e)
+    { 
+        (void)(e); 
+        std::cout << "resume playback" << std::endl; 
+    }
+
+    void stop_and_open(open_close const& e)
+    { 
+        (void)(e); 
+        std::cout << "stop and open" << std::endl; 
+    }
+
+    typedef player_state s;
+    typedef player       p;
+
+    typedef transition_table<
+    //    Start     Event         Next      Action
+    //  +---------+-------------+---------+---------------------+
+    row < s::stopped , play        , s::playing , &p::start_playback  >,
+    row < s::stopped , open_close  , s::open    , &p::open_drawer     >,
+    //  +---------+-------------+---------+---------------------+
+    row < s::open    , open_close  , s::empty   , &p::close_drawer    >,
+    //  +---------+-------------+---------+---------------------+
+    row < s::empty   , open_close  , s::open    , &p::open_drawer     >,
+    row < s::empty   , cd_detected , s::stopped , &p::store_cd_info   >,
+    //  +---------+-------------+---------+---------------------+
+    row < s::playing , stop        , s::stopped , &p::stop_playback   >,
+    row < s::playing , pause       , s::paused  , &p::pause_playback  >,
+    row < s::playing , open_close  , s::open    , &p::stop_and_open   >,
+    //  +---------+-------------+---------+---------------------+
+    row < s::paused  , play        , s::playing , &p::resume_playback >,
+    row < s::paused  , stop        , s::stopped , &p::stop_playback   >,
+    row < s::paused  , open_close  , s::open    , &p::stop_and_open   >
+    //  +---------+-------------+---------+---------------------+    
+    > transition_table_t;
+
+    typedef callback_table<> callback_table_t;
+
+public:
+    template<typename event_t>
+    s process_event(const event_t& e)
+    {
+        return transition<event_t, transition_table_t, callback_table_t>(e);
+    }
+};
+
 void out_state(st s)
 {
 	switch(s) {
@@ -108,6 +217,8 @@ int main(int argc, char** argv)
     (void)(argv);
     
     test_fsm fsm;
+
+    std::cout << std::endl << "Test fsm" << std::endl;
 
     std::cout << "sizeof(test_fsm): " << sizeof(test_fsm) << std::endl;
 
@@ -162,4 +273,31 @@ int main(int argc, char** argv)
     out_state(s);
     s = fsm.process_event(ev6);
     out_state(s);
+
+    std::cout << std::endl << "Player fsm" << std::endl;
+
+    player p;
+    std::cout << "sizeof(player): " << sizeof(player) << std::endl;
+
+    p.process_event(open_close()); // user opens CD player
+    p.process_event(open_close()); // inserts CD and closes
+    std::vector<float> tracks;
+    tracks.push_back(3.08);
+    tracks.push_back(4.34);
+    tracks.push_back(2.58);
+    tracks.push_back(5.01);
+    tracks.push_back(4.12);
+    tracks.push_back(3.24);
+    tracks.push_back(1.23);
+
+    p.process_event(               // CD is detected
+        cd_detected(
+             "CD disk"
+           , tracks
+        )
+    );
+    p.process_event(play());       // etc.
+    p.process_event(pause());
+    p.process_event(play());
+    p.process_event(stop());
 }
