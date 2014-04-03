@@ -118,9 +118,9 @@ protected:
     class scb 
     {
     protected:
-        static state_t    cb_state()    { return state;    }
-        static on_enter_t cb_on_enter() { return on_enter; }
-        static on_exit_t  cb_on_exit()  { return on_exit;  }
+        constexpr static state_t    cb_state()    { return state;    }
+        constexpr static on_enter_t cb_on_enter() { return on_enter; }
+        constexpr static on_exit_t  cb_on_exit()  { return on_exit;  }
     };
 
     template<typename... callbacks>

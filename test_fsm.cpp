@@ -281,14 +281,14 @@ int main(int argc, char** argv)
 
     p.process_event(open_close()); // user opens CD player
     p.process_event(open_close()); // inserts CD and closes
-    std::vector<float> tracks;
-    tracks.push_back(3.08);
-    tracks.push_back(4.34);
-    tracks.push_back(2.58);
-    tracks.push_back(5.01);
-    tracks.push_back(4.12);
-    tracks.push_back(3.24);
-    tracks.push_back(1.23);
+    std::vector<float> tracks(7);
+    tracks[0] = 3.08;
+    tracks[1] = 4.34;
+    tracks[2] = 2.58;
+    tracks[3] = 5.01;
+    tracks[4] = 4.12;
+    tracks[5] = 3.24;
+    tracks[6] = 1.23;
 
     p.process_event(               // CD is detected
         cd_detected(
