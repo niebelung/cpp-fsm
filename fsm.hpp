@@ -4,9 +4,7 @@
 namespace fsm
 {
 
-template<typename derived,
-         typename state_t,
-         state_t  init>
+template<typename derived, typename state_t, state_t init>
 class state_machine
 {
 protected:
@@ -213,6 +211,6 @@ private:
     constexpr static state_t m_s_init_state { init };
 };
 
-}
+} // namespace fsm
 
 #endif // FSM_HPP
