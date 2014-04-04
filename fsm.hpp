@@ -179,13 +179,13 @@ public:
     {
         static transition_table_t tt;
 
-        const state_t transition_result = tt.template transition<event_t>
-                                                                (*m_fsm_ptr, e);
-        if(transition_result != m_state) {
-            callback_table_t::call(*m_fsm_ptr, m_state, transition_result);
-        }
+        const state_t current = m_state;
+        const state_t next = tt.template transition<event_t>(*m_fsm_ptr, e);
+        m_state = next;
 
-        m_state = transition_result;
+        if(next != current) {
+            callback_table_t::call(*m_fsm_ptr, current, next);
+        }
 
         return m_state;
     }
