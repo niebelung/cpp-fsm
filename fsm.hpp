@@ -19,16 +19,14 @@ protected:
         typedef bool (derived::*guard_t)(const event_t&);
 
     protected:
-        struct transition_info {
+        typedef struct transition_info {
             action_t action;
             guard_t  guard;
             state_t  start;
             state_t  next;
 
             struct transition_info* link;
-        };
-
-        typedef struct transition_info transition_info_t;
+        } transition_info_t;
 
     private:
         transition_info_t* m_list;
@@ -211,7 +209,7 @@ private:
     state_machine& operator= (const state_machine&& other)             = delete;    
 
     state_t m_state;
-    derived* m_fsm_ptr;
+    derived* const m_fsm_ptr;
     constexpr static state_t m_s_init_state { init };
 };
 
