@@ -8,7 +8,8 @@ template<typename derived, typename state_t, state_t init>
 class state_machine
 {
 protected:
-    state_machine() : m_state(init), m_fsm_ptr(static_cast<derived*>(this)) {}
+    constexpr state_machine() : m_state(init),
+                                m_fsm_ptr(static_cast<derived*>(this)) {}
 
     template<typename event_t>
     class transition_layer
@@ -84,7 +85,7 @@ protected:
              bool (derived::*guard)(const event_t&) = nullptr>
     class row : public virtual transition_layer<event_t>
     {
-    public:
+    protected:
         row() : ti( {action, guard, start, next, nullptr} )
         {
             this->transition_layer<event_t>::add(&ti);
@@ -172,7 +173,7 @@ protected:
     };
 
 public:
-    template<typename event_t, 
+    template<typename event_t,
              typename transition_table_t,
              typename callback_table_t>
     state_t transition(const event_t& e)

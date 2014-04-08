@@ -1,6 +1,6 @@
 CXXFLAGS = -std=c++11 -Wall -Wextra -fstack-protector -fPIC -fno-rtti -fno-exceptions
 GCC_SPECIFIC = -fstack-check -fbounds-check
-ARM_LD_FLAGS = --specs=rdimon.specs -lg -lrdimon
+ARM_LD_FLAGS = --specs=rdimon.specs -lrdimon
 
 SRC = test_fsm.cpp
 
